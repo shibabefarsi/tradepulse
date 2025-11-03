@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Multi-TP Profit Calculator | Trading Tool</title>
+<title>Multi-TP Profit Calculator | TradePulse</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,6 +12,7 @@
         margin: 0;
         padding: 0;
     }
+
     header {
         background: #1f2833;
         padding: 20px;
@@ -19,16 +20,18 @@
         border-bottom: 2px solid #66fcf1;
     }
     header h1 { color: #66fcf1; margin: 0; font-size: 1.8rem; }
-    main {
+
+    main, .description {
         max-width: 600px;
-        margin: 50px auto;
+        margin: 40px auto;
         background: #1f2833;
-        padding: 30px;
+        padding: 25px 30px;
         border-radius: 12px;
         box-shadow: 0 0 20px rgba(0,255,255,0.1);
     }
-    h2 { color: #45a29e; text-align: center; }
-    label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; }
+
+    h2 { color: #45a29e; text-align: center; margin-bottom: 15px; }
+    label { display: block; margin-top: 12px; margin-bottom: 5px; font-weight: bold; }
     input[type="number"], select, input[type="text"] {
         width: 100%;
         padding: 10px;
@@ -37,8 +40,10 @@
         background: #0b0c10;
         color: #c5c6c7;
         box-shadow: inset 0 0 5px #45a29e;
+        font-size: 1rem;
     }
     input::placeholder { color: #66fcf1; }
+
     button {
         margin-top: 20px;
         width: 100%;
@@ -52,18 +57,21 @@
         transition: all 0.3s ease;
     }
     button:hover { background: #66fcf1; color: #1f2833; }
+
     .result {
-        margin-top: 25px;
+        margin-top: 20px;
         padding: 15px;
         background: #0b0c10;
         border: 1px solid #45a29e;
         border-radius: 8px;
         text-align: center;
         font-size: 1.2rem;
+        word-wrap: break-word;
     }
+
     .tp-inputs input { margin-bottom: 10px; }
-    footer { text-align: center; margin-top: 50px; color: #45a29e; font-size: 0.9rem; }
     .sl-result { color: red; font-weight: bold; margin-top: 10px; display: block; }
+
     #warning {
         display: none;
         position: fixed;
@@ -91,6 +99,34 @@
         cursor: pointer;
     }
     select:disabled { background: #333; color: #888; cursor: not-allowed; }
+
+    .persian {
+        direction: rtl;
+        text-align: right;
+        font-family: 'Tahoma', 'Segoe UI', sans-serif;
+    }
+
+    hr {
+        border: 0.5px solid #45a29e;
+        margin: 25px 0;
+    }
+
+    footer {
+        text-align: center;
+        margin: 20px auto 40px auto;
+        color: #45a29e;
+        font-size: 0.9rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+        main, .description {
+            margin: 20px 15px;
+            padding: 20px;
+        }
+        h2 { font-size: 1.4rem; }
+        input, select, button { font-size: 0.95rem; }
+    }
 </style>
 </head>
 <body>
@@ -141,6 +177,18 @@
     <div class="result" id="result">Total Profit: $0.00</div>
 </main>
 
+<section class="description">
+    <h2>TradePulse - Multi-TP Profit Calculator</h2>
+    <p>Easily calculate your potential profits and losses for multiple take-profit levels in crypto or stock trading. Enter your <strong>margin</strong>, <strong>leverage</strong>, <strong>entry price</strong>, <strong>stop loss</strong>, and <strong>take-profit targets</strong> to see your <strong>profit per TP</strong>, <strong>total profit</strong>, and <strong>stop-loss impact</strong>. Supports both <strong>long</strong> and <strong>short positions</strong>, as well as <strong>spot</strong> (no leverage) and <strong>futures</strong> (with leverage) trading.</p>
+    <p>Optimize your trades and manage risk with a clear, fast, and intuitive tool.</p>
+
+    <hr>
+
+    <h2 class="persian">TradePulse - ماشین حساب چندین حد سود (TP)</h2>
+    <p class="persian">به‌راحتی سود و زیان احتمالی خود را برای چندین سطح <strong>حد سود</strong> در معاملات کریپتو یا بورس محاسبه کنید. <strong>مارجین، لوریج، قیمت ورود، حد ضرر</strong> و <strong>قیمت‌های هدف (TP)</strong> خود را وارد کنید تا <strong>سود هر TP، سود کل</strong> و <strong>تاثیر حد ضرر</strong> را ببینید. از <strong>پوزیشن‌های لانگ و شورت</strong> و همچنین معاملات <strong>اسپات (بدون لوریج)</strong> و <strong>فیوچرز (با لوریج)</strong> پشتیبانی می‌کند.</p>
+    <p class="persian">با این ابزار سریع و ساده، معاملات خود را بهینه کنید و ریسک را مدیریت کنید.</p>
+</section>
+
 <footer>
     Designed for traders & crypto enthusiasts
 </footer>
@@ -155,7 +203,7 @@ function toggleLeverage() {
     if(mode === 'dollar_no_leverage') {
         leverageInput.style.display = 'none';
         leverageLabel.style.display = 'none';
-        positionSelect.disabled = true; // force long
+        positionSelect.disabled = true;
     } else {
         leverageInput.style.display = 'block';
         leverageLabel.style.display = 'block';
@@ -185,7 +233,6 @@ function calculateProfit() {
     const mode = document.getElementById('mode').value;
     const position = document.getElementById('position').value;
 
-    // Validations
     if (entry <= 0) { showWarning("Entry price must be greater than 0."); return; }
     if (sl <= 0) { showWarning("Stop loss must be greater than 0."); return; }
     if (!tpInput) { showWarning("Please enter at least one TP price."); return; }
@@ -194,9 +241,8 @@ function calculateProfit() {
     if(tps.length === 0){ showWarning("No valid TP prices found."); return; }
 
     const actualPosition = mode === 'dollar_no_leverage' ? 'long' : position;
-    if(mode === 'dollar_no_leverage') leverage = 1; // override leverage in spot mode
+    if(mode === 'dollar_no_leverage') leverage = 1;
 
-    // Validate SL and TP based on position
     if (actualPosition === 'long') {
         if (tps.some(tp => tp <= entry)) { showWarning("TP prices for long should be higher than entry."); return; }
         if (sl >= entry) { showWarning("Stop loss for long should be lower than entry."); return; }
