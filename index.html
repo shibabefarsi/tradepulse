@@ -111,12 +111,22 @@
         margin: 25px 0;
     }
 
+   footer {
+    text-align: center;
+    margin: 12px 10px; /* smaller horizontal margin on mobile */
+    color: #45a29e;
+    font-size: 0.9rem;
+    word-wrap: break-word; /* ensures text doesn't overflow */
+}
+
+/* Responsive tweak for very small screens */
+@media (max-width: 400px) {
     footer {
-        text-align: center;
-        margin: 20px auto 40px auto;
-        color: #45a29e;
-        font-size: 0.9rem;
+        font-size: 0.8rem;
+        margin: 10px 5px;
     }
+}
+
 
     /* Responsive adjustments */
     @media (max-width: 640px) {
