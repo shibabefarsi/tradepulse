@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Multi-TP Profit Calculator | TradePulse</title>
+<title>Multi-TP Profit Calculator | Trading Tool</title>
 <style>
     body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -12,7 +12,6 @@
         margin: 0;
         padding: 0;
     }
-
     header {
         background: #1f2833;
         padding: 20px;
@@ -20,8 +19,8 @@
         border-bottom: 2px solid #66fcf1;
     }
     header h1 { color: #66fcf1; margin: 0; font-size: 1.8rem; }
-
-    main, .description {
+    
+      main, .description {
         max-width: 600px;
         margin: 40px auto;
         background: #1f2833;
@@ -30,8 +29,8 @@
         box-shadow: 0 0 20px rgba(0,255,255,0.1);
     }
 
-    h2 { color: #45a29e; text-align: center; margin-bottom: 15px; }
-    label { display: block; margin-top: 12px; margin-bottom: 5px; font-weight: bold; }
+    h2 { color: #45a29e; text-align: center; }
+    label { display: block; margin-top: 15px; margin-bottom: 5px; font-weight: bold; }
     input[type="number"], select, input[type="text"] {
         width: 100%;
         padding: 10px;
@@ -40,10 +39,8 @@
         background: #0b0c10;
         color: #c5c6c7;
         box-shadow: inset 0 0 5px #45a29e;
-        font-size: 1rem;
     }
     input::placeholder { color: #66fcf1; }
-
     button {
         margin-top: 20px;
         width: 100%;
@@ -59,18 +56,15 @@
     button:hover { background: #66fcf1; color: #1f2833; }
 
     .result {
-        margin-top: 20px;
+        margin-top: 25px;
         padding: 15px;
         background: #0b0c10;
         border: 1px solid #45a29e;
         border-radius: 8px;
         text-align: center;
         font-size: 1.2rem;
-        word-wrap: break-word;
     }
-
     .tp-inputs input { margin-bottom: 10px; }
-    .sl-result { color: red; font-weight: bold; margin-top: 10px; display: block; }
 
     #warning {
         display: none;
@@ -98,46 +92,18 @@
         font-weight: bold;
         cursor: pointer;
     }
-    select:disabled { background: #333; color: #888; cursor: not-allowed; }
 
-    .persian {
+    .sl-result { color: red; font-weight: bold; margin-top: 10px; display: block; }
+
+      .persian {
         direction: rtl;
         text-align: right;
         font-family: 'Tahoma', 'Segoe UI', sans-serif;
     }
 
-    hr {
-        border: 0.5px solid #45a29e;
-        margin: 25px 0;
-    }
 
-   footer {
-    text-align: center;
-    margin: 12px 10px; /* smaller horizontal margin on mobile */
-    color: #45a29e;
-    font-size: 0.9rem;
-    word-wrap: break-word; /* ensures text doesn't overflow */
-}
-
-/* Responsive tweak for very small screens */
-@media (max-width: 400px) {
-    footer {
-        font-size: 0.8rem;
-        margin: 10px 5px;
-    }
-}
-
-
-    /* Responsive adjustments */
-    @media (max-width: 640px) {
-        main, .description {
-            margin: 20px 15px;
-            padding: 20px;
-        }
-        h2 { font-size: 1.4rem; }
-        input, select, button { font-size: 0.95rem; }
-    }
 </style>
+
 </head>
 <body>
 
@@ -153,30 +119,28 @@
 <main>
     <h2>Calculate Total Profit for Multiple Take-Profits</h2>
 
-    <label for="margin">Margin ($)</label>
-    <input type="number" id="margin" placeholder="Enter your margin" value="600" min="0">
+    <label>Margin ($)</label>
+    <input type="number" id="margin" value="600">
 
-    <label for="leverage" id="leverage-label">Leverage (x)</label>
-    <input type="number" id="leverage" placeholder="Enter leverage" value="20" min="1">
+    <label id="leverage-label">Leverage (x)</label>
+    <input type="number" id="leverage" value="20">
 
-    <label for="entry">Entry Price ($)</label>
-    <input type="number" id="entry" step="0.0001" placeholder="Enter entry price" value="0.3547" min="0.0001">
+    <label>Entry Prices ($) - comma separated for multiple entries</label>
+    <input type="text" id="entry" value="0.3547,0.3560">
 
-    <label for="sl">Stop Loss Price ($)</label>
-    <input type="number" id="sl" step="0.0001" placeholder="Enter stop loss price" value="0.3400" min="0.0001">
+    <label>Stop Loss Price ($)</label>
+    <input type="number" id="sl" step="0.0001" value="0.3400">
 
-    <div class="tp-inputs">
-        <label>Take-Profit Prices ($) - separate by comma</label>
-        <input type="text" id="tps" placeholder="e.g., 0.3606,0.3636" value="0.3606,0.3636">
-    </div>
+    <label>Take-Profit Prices (comma separated)</label>
+    <input type="text" id="tps" value="0.3606,0.3636">
 
-    <label for="mode">Calculation Mode</label>
+    <label>Calculation Mode</label>
     <select id="mode" onchange="toggleLeverage()">
         <option value="dollar_leverage">Dollar Profit (With Leverage - Futures)</option>
         <option value="dollar_no_leverage">Dollar Profit (Without Leverage - Spot)</option>
     </select>
 
-    <label for="position">Position Type</label>
+    <label>Position Type</label>
     <select id="position">
         <option value="long">Long</option>
         <option value="short">Short</option>
@@ -211,104 +175,89 @@
     
 </section>
 
-   
-    
-<footer>
+<footer style="text-align:center; margin-top:40px; color:#45a29e;">
     Designed for traders & crypto enthusiasts
 </footer>
 
 <script>
 function toggleLeverage() {
-    const mode = document.getElementById('mode').value;
-    const leverageInput = document.getElementById('leverage');
-    const leverageLabel = document.getElementById('leverage-label');
-    const positionSelect = document.getElementById('position');
-
-    if(mode === 'dollar_no_leverage') {
-        leverageInput.style.display = 'none';
-        leverageLabel.style.display = 'none';
-        positionSelect.disabled = true;
+    let mode = document.getElementById("mode").value;
+    if (mode === "dollar_no_leverage") {
+        document.getElementById("leverage").style.display = "none";
+        document.getElementById("leverage-label").style.display = "none";
+        document.getElementById("position").disabled = true;
     } else {
-        leverageInput.style.display = 'block';
-        leverageLabel.style.display = 'block';
-        positionSelect.disabled = false;
+        document.getElementById("leverage").style.display = "block";
+        document.getElementById("leverage-label").style.display = "block";
+        document.getElementById("position").disabled = false;
     }
 }
 
-function showWarning(message) {
-    const warningDiv = document.getElementById('warning');
-    const warningText = document.getElementById('warning-text');
-    warningText.innerHTML = message;
-    warningDiv.style.display = 'block';
+function showWarning(msg) {
+    document.getElementById("warning-text").innerHTML = msg;
+    document.getElementById("warning").style.display = "block";
 }
 
 function clearWarning() {
-    document.getElementById('warning').style.display = 'none';
+    document.getElementById("warning").style.display = "none";
 }
 
 function calculateProfit() {
     clearWarning();
 
-    const margin = parseFloat(document.getElementById('margin').value) || 0;
-    let leverage = parseFloat(document.getElementById('leverage').value) || 1;
-    const entry = parseFloat(document.getElementById('entry').value);
-    const sl = parseFloat(document.getElementById('sl').value);
-    const tpInput = document.getElementById('tps').value;
-    const mode = document.getElementById('mode').value;
-    const position = document.getElementById('position').value;
+    let margin = parseFloat(document.getElementById("margin").value);
+    let leverage = parseFloat(document.getElementById("leverage").value) || 1;
+    const entryInput = document.getElementById("entry").value;
+    const sl = parseFloat(document.getElementById("sl").value);
+    const mode = document.getElementById("mode").value;
+    const position = document.getElementById("position").value;
 
-    if (entry <= 0) { showWarning("Entry price must be greater than 0."); return; }
-    if (sl <= 0) { showWarning("Stop loss must be greater than 0."); return; }
-    if (!tpInput) { showWarning("Please enter at least one TP price."); return; }
+    // Parse multiple entry prices
+    const entries = entryInput.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+    if(entries.length === 0) { showWarning("Please enter valid entry prices."); return; }
 
-    const tps = tpInput.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
-    if(tps.length === 0){ showWarning("No valid TP prices found."); return; }
+    // Weighted average entry
+    const avgEntry = entries.reduce((sum,p) => sum + p, 0) / entries.length;
 
-    const actualPosition = mode === 'dollar_no_leverage' ? 'long' : position;
-    if(mode === 'dollar_no_leverage') leverage = 1;
+    // Parse TPs
+    const tps = document.getElementById("tps").value.split(',').map(x => parseFloat(x.trim())).filter(x => !isNaN(x));
+    if(tps.length === 0){ showWarning("Please enter valid TP prices."); return; }
 
-    if (actualPosition === 'long') {
-        if (tps.some(tp => tp <= entry)) { showWarning("TP prices for long should be higher than entry."); return; }
-        if (sl >= entry) { showWarning("Stop loss for long should be lower than entry."); return; }
+    if(mode === "dollar_no_leverage") leverage = 1;
+    const actualPosition = mode === "dollar_no_leverage" ? "long" : position;
+
+    // Validate SL and TP based on position
+    if (actualPosition === "long") {
+        if (tps.some(tp => tp <= avgEntry)) { showWarning("TPs for long should be above average entry."); return; }
+        if (sl >= avgEntry) { showWarning("SL for long should be below average entry."); return; }
     } else {
-        if (tps.some(tp => tp >= entry)) { showWarning("TP prices for short should be lower than entry."); return; }
-        if (sl <= entry) { showWarning("Stop loss for short should be higher than entry."); return; }
+        if (tps.some(tp => tp >= avgEntry)) { showWarning("TPs for short should be below average entry."); return; }
+        if (sl <= avgEntry) { showWarning("SL for short should be above average entry."); return; }
     }
 
     let totalProfit = 0;
-    let outputText = '';
+    let outputText = "";
 
-    tps.forEach((tp, i) => {
+    tps.forEach((tp,i) => {
         const portion = margin / tps.length;
-        let profitDollar, profitPercent;
+        let profit = actualPosition === "long"
+            ? portion * leverage * (tp - avgEntry) / avgEntry
+            : portion * leverage * (avgEntry - tp) / avgEntry;
 
-        if(actualPosition === 'long') {
-            profitDollar = portion * leverage * (tp - entry) / entry;
-            profitPercent = ((tp - entry) / entry * 100) * leverage;
-        } else {
-            profitDollar = portion * leverage * (entry - tp) / entry;
-            profitPercent = ((entry - tp) / entry * 100) * leverage;
-        }
-
-        const color = profitDollar >= 0 ? 'lime' : 'red';
-        outputText += `TP${i+1} @ $${tp}: <span style="color:${color}">${profitPercent.toFixed(2)}% / $${profitDollar.toFixed(2)}</span><br>`;
-        totalProfit += profitDollar;
+        totalProfit += profit;
+        outputText += `TP${i+1} @ $${tp}: <span style="color:${profit>=0?'lime':'red'}">$${profit.toFixed(2)}</span><br>`;
     });
 
-    let slDollar, slPercent;
-    if(actualPosition === 'long') {
-        slDollar = margin * leverage * (sl - entry) / entry;
-        slPercent = ((sl - entry) / entry * 100) * leverage;
-    } else {
-        slDollar = margin * leverage * (entry - sl) / entry;
-        slPercent = ((entry - sl) / entry * 100) * leverage;
-    }
+    // SL
+    let slProfit = actualPosition === "long"
+        ? margin * leverage * (sl - avgEntry) / avgEntry
+        : margin * leverage * (avgEntry - sl) / avgEntry;
 
-    const totalColor = totalProfit >= 0 ? 'lime' : 'red';
-    document.getElementById('result').innerHTML = 
+    document.getElementById("result").innerHTML =
+        `Avg Entry: <span style="color:yellow">$${avgEntry.toFixed(4)}</span><br>` +
         outputText +
-        `<br><strong style="color:${totalColor}">Total Profit: $${totalProfit.toFixed(2)}</strong>` +
-        `<br><span class="sl-result">Stop Loss $${sl}: ${slPercent.toFixed(2)}% / $${slDollar.toFixed(2)}</span>`;
+        `<br><b style="color:${totalProfit>=0?'lime':'red'}">Total Profit: $${totalProfit.toFixed(2)}</b>` +
+        `<br><span class="sl-result">SL @ $${sl} → $${slProfit.toFixed(2)}</span>`;
 }
 
 toggleLeverage();
@@ -316,6 +265,3 @@ toggleLeverage();
 
 </body>
 </html>
-
-
-
